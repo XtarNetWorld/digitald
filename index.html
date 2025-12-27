@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitalDearBD - Premium Digital Products</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+       
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --background: #f8fafc;
+            --foreground: #0f172a;
+            --card: #ffffff;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+        }
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-12px) scale(1.05) rotate(2deg);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+            border-color: var(--primary);
+        }
+        .product-card .no-click {
+            pointer-events: none;
+        }
+        .badge-hot {
+            background: linear-gradient(45deg, #f43f5e, #fb7185);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+        }
+        .mobile-bottom-nav .nav-item {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            color: #64748b;
+            transition: color 0.2s;
+        }
+        .mobile-bottom-nav .nav-item.active,
+        .mobile-bottom-nav .nav-item:hover {
+            color: var(--primary);
+        }
+        .mobile-bottom-nav .nav-item i {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .mobile-bottom-nav .nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        /* Floating WhatsApp Button */
+        #whatsapp-float {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+                #whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        /* Mobile Categories Menu */
+        #mobile-categories {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            height: 100%;
+            background: white;
+            z-index: 150;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.1);
+            padding: 16px;
+        }
+        #mobile-categories.open {
+            left: 0;
+        }
+        #mobile-categories .close-btn {
+            text-align: right;
+            margin-bottom: 16px;
+        }
+        #mobile-categories ul li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        #mobile-categories ul li a {
+            display: flex;
+            align-items: center;
+            color: #0f172a;
+            font-weight: 500;
+        }
+        #mobile-categories ul li a i {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+        /* Overlay for categories */
+        #categories-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 140;
+            display: none;
+        }
+        #categories-overlay.active {
+            display: block;
+        }
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+                    #whatsapp-float {
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background: #25D366;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+        }
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                padding: 0 8px;
+            }
+            #hero-section {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-bottom: 24px;
+            }
+            .hidden-mobile {
+                display: none !important;
+               
+            }
+            .mobile-bottom-nav {
+                display: flex;
+            }
+            main {
+                padding-bottom: 80px;
+            }
+            header .max-w-7xl {
+                padding: 40 12px;
+            }
+            .search-input {
+                width: 100%;
+            }
+            .header-actions {
+                gap: 1rem;
+            }
+            #sort-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 12px;
+            }
+            #sort-bar h2 {
+                font-size: 1.25rem;
+            }
+            #product-detail .grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                padding: 0 12px;
+            }
+            #product-detail img {
+                height: 280px;
+            }
+            .product-detail {
+                padding: 16px;
+                border-radius: 16px 16px 0 0;
+            }
+        }
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-20 md:pb-0">
+    <!-- Top Bar -->
+    <div class="bg-slate-900 text-white py-2 px-4 text-xs">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="hidden sm:inline"><i class="fas fa-phone-alt mr-2 text-blue-400"></i> Hotline: +917732930923</span>
+                <span><i class="fas fa-envelope mr-2 text-blue-400"></i> support@digitalplat.com</span>
+            </div>
+            
+        </div>
+    </div>
+    <!-- Main Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+            <!-- Mobile Category Button and Logo -->
+            <div class="flex items-center gap-4">
+                <button class="md:hidden text-slate-600 hover:text-blue-600 text-2xl" onclick="toggleMobileCategories()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex items-center gap-2">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white">
+                        <i class="fas fa-bolt fa-lg"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+                        Digital<span class="text-blue-600">Dear</span>
+                    </h1>
+                </div>
+            </div>
+            <!-- Search -->
+            <div class="flex-1 w-full max-w-xl md:mx-4">
+                <div class="relative group">
+                    <input id="search-input" type="text" list="suggestions" placeholder="Search products..."
+                        class="w-full bg-slate-100 border-none rounded-full py-2.5 px-6 pr-12 focus:ring-2 focus:ring-blue-500 transition-all outline-none text-sm">
+                    <datalist id="suggestions"></datalist>
+                    <button id="search-button" onclick="searchProducts()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Actions (Hidden on mobile) -->
+            <div class="flex items-center gap-6 header-actions hidden-mobile">
+                <div class="relative cursor-pointer group" onclick="toggleWishlist()">
+                    <i class="far fa-heart text-xl text-slate-600 group-hover:text-blue-600 transition-colors"></i>
+                    <span id="wishlist-count" class="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                </div>
+                <div class="relative cursor-pointer group" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart text-xl text-slate-600 group-hover:text-blue-600 transition-colors"></i>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-blue-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                </div>
+            </div>
+        </div>
+       
+
+    </header>
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+        <!-- Hero Section -->
+        <div id="hero-section" class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+            <!-- Categories Sidebar (Desktop Only) -->
+            <div class="hidden lg:block bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+                <h3 class="font-bold text-slate-900 mb-4 px-2">Categories</h3>
+                <ul class="space-y-1">
+                    <li><a onclick="filterByCategory('All')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fas fa-home mr-3 w-5"></i> All</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                    <li><a onclick="filterByCategory('Windows')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fab fa-windows mr-3 w-5"></i> Windows</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                    <li><a onclick="filterByCategory('Antivirus')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fas fa-shield-alt mr-3 w-5"></i> Antivirus</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                    <li><a onclick="filterByCategory('VPN')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fas fa-key mr-3 w-5"></i> VPN Services</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                    <li><a onclick="filterByCategory('Graphics')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fas fa-palette mr-3 w-5"></i> Graphic Design</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                    <li><a onclick="filterByCategory('Education')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fas fa-graduation-cap mr-3 w-5"></i> Education</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                    <li><a onclick="filterByCategory('Software')" class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"><span><i class="fas fa-cogs mr-3 w-5"></i> Software</span> <i class="fas fa-chevron-right text-[10px]"></i></a></li>
+                </ul>
+            </div>
+            <!-- Banner -->
+            <div class="lg:col-span-3 relative rounded-2xl overflow-hidden h-[280px] md:h-[380px] group shadow-md">
+                <img src="https://i.pcmag.com/imagery/reviews/00xBy0JjVybodfIwWxeGCkZ-1..v1679417407.jpg" class="w-full h-full object-cover" alt="Banner">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/80 to-transparent flex flex-col justify-center px-6 md:px-12 text-white">
+                    <span class="text-blue-400 font-bold tracking-widest text-xs uppercase mb-2">New Arrival</span>
+                    <h2 class="text-2xl md:text-4xl font-black mb-3 leading-tight">Windows 11 Pro<br>Digital License</h2>
+                    <p class="text-slate-300 max-w-md mb-6 hidden md:block text-sm">Get authentic Microsoft licenses at unbeatable prices. Lifetime activation with instant delivery.</p>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-full w-fit transition-all transform hover:scale-105 text-sm">Shop Now</button>
+                </div>
+            </div>
+        </div>
+        <!-- Sorting & Filter Bar -->
+        <div id="sort-bar" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <h2 class="text-xl font-bold text-slate-900">Featured Products</h2>
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <select id="sort-filter" onchange="sortProducts()" class="bg-slate-50 border border-slate-200 rounded-lg py-2 px-4 text-sm text-slate-600 outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-auto">
+                    <option value="latest">Sort by Latest</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name: A-Z</option>
+                </select>
+            </div>
+        </div>
+        <!-- Product Grid -->
+        <div id="product-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 product-grid">
+            <!-- Products will be injected by JS -->
+        </div>
+        <!-- Product Detail Page -->
+        <div id="product-detail" class="hidden product-detail mt-8">
+            <button onclick="showHome()" class="mb-6 text-blue-600 hover:underline flex items-center gap-2 text-lg"><i class="fas fa-arrow-left"></i>Back</button>
+            <div id="detail-content" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="mobile-bottom-nav">
+        <div class="nav-item active" onclick="showHome()">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="filterByCategory('All')">
+            <i class="fas fa-th-large"></i>
+            <span>Products</span>
+        </div>
+        <div class="nav-item" onclick="toggleWishlist()">
+            <i class="far fa-heart"></i>
+            <span>Wishlist</span>
+        </div>
+        <div class="nav-item" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Support Button -->
+    <a href="https://wa.me/+8801234567890?text=Hello! I need help with ordering." target="_blank" id="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Mobile Categories Menu -->
+    <div id="mobile-categories">
+        <div class="close-btn">
+            <button onclick="toggleMobileCategories()" class="text-slate-600 hover:text-blue-600 text-2xl"><i class="fas fa-times"></i></button>
+        </div>
+        <h3 class="font-bold text-slate-900 mb-4 text-xl">Categories</h3>
+        <ul class="space-y-2">
+            <li><a onclick="filterByCategory('All'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fas fa-home"></i> All</a></li>
+            <li><a onclick="filterByCategory('Windows'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fab fa-windows"></i> Windows</a></li>
+            <li><a onclick="filterByCategory('Antivirus'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fas fa-shield-alt"></i> Antivirus</a></li>
+            <li><a onclick="filterByCategory('VPN'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fas fa-key"></i> VPN Services</a></li>
+            <li><a onclick="filterByCategory('Graphics'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fas fa-palette"></i> Graphic Design</a></li>
+            <li><a onclick="filterByCategory('Education'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fas fa-graduation-cap"></i> Education</a></li>
+            <li><a onclick="filterByCategory('Software'); toggleMobileCategories()" class="flex items-center gap-2"><i class="fas fa-cogs"></i> Software</a></li>
+        </ul>
+    </div>
+    <div id="categories-overlay" onclick="toggleMobileCategories()"></div>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed inset-0 z-[100] translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="absolute inset-0 bg-black/50" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+            <div class="p-6 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-900">Your Cart</h3>
+                <button onclick="toggleCart()" class="text-slate-400 hover:text-slate-900"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="cart-items" class="flex-grow overflow-y-auto p-6 space-y-4">
+                <div id="empty-cart" class="text-center py-12">
+                    <i class="fas fa-shopping-basket text-5xl text-slate-200 mb-4"></i>
+                    <p class="text-slate-500">Your cart is empty</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-slate-200 bg-slate-50">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-slate-600">Total:</span>
+                    <span id="cart-total" class="text-2xl font-black text-blue-600">৳ 0</span>
+                </div>
+                <button onclick="orderViaWhatsApp()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-200 transition-all"><i class="fab fa-whatsapp mr-2"></i>Order via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div id="wishlist-sidebar" class="fixed inset-0 z-[100] translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="absolute inset-0 bg-black/50" onclick="toggleWishlist()"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+            <div class="p-6 border-b border-slate-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-900">Your Wishlist</h3>
+                <button onclick="toggleWishlist()" class="text-slate-400 hover:text-slate-900"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="wishlist-items" class="flex-grow overflow-y-auto p-6 space-y-4">
+                <div id="empty-wishlist" class="text-center py-12">
+                    <i class="far fa-heart text-5xl text-slate-200 mb-4"></i>
+                    <p class="text-slate-500">Your wishlist is empty</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-slate-200 bg-slate-50">
+                <button onclick="moveAllToCart()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-200 transition-all"><i class="fas fa-shopping-cart mr-2"></i>Move All to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 pt-16 pb-24 md:pb-8">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div>
+                <div class="flex items-center gap-2 mb-6">
+                    <div class="bg-blue-600 p-2 rounded-lg text-white">
+                        <i class="fas fa-bolt fa-lg"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold tracking-tight text-white">
+                        DigitalTools<span class="text-blue-600">BD</span>
+                    </h2>
+                </div>
+                <p class="text-sm leading-relaxed mb-6">Your most trusted partner for premium digital tools and software licenses in Bangladesh.</p>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-blue-400 hover:text-white transition-all"><i class="fab fa-twitter"></i></a>
+                    <a href="https://wa.me/+8801234567890" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Quick Links</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">Refund Policy</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">How to Order</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Support</h4>
+                <ul class="space-y-4 text-sm">
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">Help Center</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">Track Order</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">Contact Support</a></li>
+                    <li><a href="#" class="hover:text-blue-400 transition-colors">My Account</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Newsletter</h4>
+                <p class="text-xs mb-4">Get the latest deals and updates straight to your inbox.</p>
+                <div class="flex gap-2">
+                    <input type="email" placeholder="Your Email" class="bg-slate-800 border-none rounded-lg px-4 py-2 text-sm w-full outline-none focus:ring-1 focus:ring-blue-500">
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 border-t border-slate-800 pt-8 text-center text-xs">
+            <p>&copy; 2025 DigitalToolsBD Clone. All rights reserved. Designed with <i class="fas fa-heart text-red-500"></i> for Bangladesh.</p>
+        </div>
+    </footer>
+     <script>
+        // Products data in JSON format (as if from product.json)
+        const products = [
+            { id: 1, name: "Windows 11 Pro Retail License", price: 450, oldPrice: 1200, category: "Windows", image: "https://i0.wp.com/pureinfotech.com/wp-content/uploads/2022/05/windows-11-pro-home-retail-box_hero.webp?fit=1600%2C1080&quality=78&strip=all&ssl=1", hot: true, description: "Lifetime digital license for Windows 11 Pro with instant delivery. Includes all pro features like BitLocker, Remote Desktop, and more." },
+            { id: 2, name: "Canva Pro 1 Year Subscription", price: 299, oldPrice: 999, category: "Graphics", image: "https://media.licdn.com/dms/image/v2/D4D22AQGg3c4Fd_UkrQ/feedshare-shrink_800/feedshare-shrink_800/0/1701078862564?e=2147483647&v=beta&t=Frc45vGm49OWTq1YPwEbb3DcyS1MT1Jtpg9tx6ouFn4", hot: true, description: "1 year access to Canva Pro features including premium templates, stock photos, and advanced editing tools." },
+            { id: 3, name: "NordVPN 2 Year Premium", price: 1500, oldPrice: 4500, category: "VPN", image: "https://i.pcmag.com/imagery/reviews/04yO1RQQQj7e5kEow66iE52-31.fit_lim.size_1200x630.v1602257660.png", hot: false, description: "Secure VPN for 2 years with unlimited bandwidth, no-logs policy, and servers in 60+ countries." },
+            { id: 4, name: "Adobe Creative Cloud All Apps", price: 2500, oldPrice: 8500, category: "Graphics", image: "https://sterlingadaptives.com/cdn/shop/products/AdobeCreativeCloud.png?v=1680201989", hot: false, description: "Full access to Adobe suite including Photoshop, Illustrator, Premiere Pro, and more for creative professionals." },
+            { id: 5, name: "Kaspersky Total Security 1Y", price: 650, oldPrice: 1500, category: "Antivirus", image: "https://cdn.kaspersky.com/se/com/content/en-global/images/b2c/product-screenshot/screen-ktsmd-01/screen-ktsmd-01.png", hot: true, description: "1 year total security protection against viruses, ransomware, and online threats with parental controls." },
+            { id: 6, name: "Office 2021 Pro Plus Key", price: 800, oldPrice: 2200, category: "Windows", image: "https://learn-attachment.microsoft.com/api/attachments/84426626-4e37-4ac8-b5c1-368e46c9d484?platform=QnA", hot: false, description: "Lifetime key for Office 2021 Pro Plus including Word, Excel, PowerPoint, and Outlook." },
+            { id: 7, name: "Skillshare Premium 1 Year", price: 1200, oldPrice: 3500, category: "Education", image: "https://i.pinimg.com/736x/c0/1b/20/c01b20b750a01eef5bc15234c45351f9.jpg", hot: false, description: "1 year premium learning access to thousands of classes on creative skills, business, and more." },
+            { id: 8, name: "IDM Lifetime Digital License", price: 550, oldPrice: 1800, category: "Software", image: "https://m.media-amazon.com/images/I/41VNlf7wUjL.jpg_BO30,255,255,255_UF900,850_SR1910,1000,0,C_QL100_.jpg", hot: true, description: "Lifetime license for Internet Download Manager with accelerated downloads and browser integration." },
+        ];
+        let cart = [];
+        let wishlist = [];
+        let currentProducts = [...products];
+        let currentProductName = null;
+        // Load from localStorage
+        function loadData() {
+            const storedCart = localStorage.getItem('cart');
+            if (storedCart) cart = JSON.parse(storedCart);
+            const storedWishlist = localStorage.getItem('wishlist');
+            if (storedWishlist) wishlist = JSON.parse(storedWishlist);
+            updateCartUI();
+            updateWishlistUI();
+        }
+        // Save to localStorage
+        function saveData() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+        // Initialize Products
+        function renderProducts(productsToRender = currentProducts) {
+            const grid = document.getElementById('product-grid');
+            if (productsToRender.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500"><i class="fas fa-search text-4xl mb-4"></i><p>No products found.</p></div>';
+                return;
+            }
+            grid.innerHTML = productsToRender.map((product, index) => `
+                <div class="product-card bg-white rounded-2xl overflow-hidden flex flex-col group h-full animate-fadeIn no-click" style="animation-delay: ${index * 0.1}s;" onclick="showProductDetails('${encodeURIComponent(product.name)}')">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        ${product.hot ? '<span class="absolute top-2 left-2 badge-hot text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">HOT DEAL</span>' : ''}
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <button onclick="addToCart(${product.id}); event.stopPropagation();" class="bg-white text-blue-600 p-3 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                            <button onclick="toggleWishlistItem(${product.id}); event.stopPropagation();" class="bg-white text-slate-600 p-3 rounded-full shadow-lg hover:bg-slate-100 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                <i class="${wishlist.some(i => i.id === product.id) ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
+                            <button onclick="shareProduct('${product.name}'); event.stopPropagation();" class="bg-white text-slate-600 p-3 rounded-full shadow-lg hover:bg-gray-700 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-150">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase mb-1">${product.category}</span>
+                        <h3 class="text-sm font-semibold text-slate-800 mb-2 line-clamp-2">${product.name}</h3>
+                        <div class="mt-auto flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400 line-through">৳ ${product.oldPrice}</span>
+                                <span class="text-lg font-black text-blue-600">৳ ${product.price}</span>
+                            </div>
+                            <button onclick="addToCart(${product.id}); event.stopPropagation();" class="text-slate-300 hover:text-blue-600 text-xl transition-colors no-click">
+                                <i class="fas fa-shopping-bag"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        // Category Filter
+        function filterByCategory(category) {
+            if (category === 'All') {
+                currentProducts = [...products];
+            } else {
+                currentProducts = products.filter(p => p.category === category);
+            }
+            renderProducts(currentProducts);
+            sortProducts(); // Apply current sort after filter
+        }
+        // Sorting Logic
+        function sortProducts() {
+            const sortVal = document.getElementById('sort-filter').value;
+            let sortedProducts = [...currentProducts];
+            if (sortVal === 'price-low') {
+                sortedProducts.sort((a, b) => a.price - b.price);
+            } else if (sortVal === 'price-high') {
+                sortedProducts.sort((a, b) => b.price - a.price);
+            } else if (sortVal === 'name') {
+                sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            renderProducts(sortedProducts);
+        }
+        // Search Logic - Now with live search and enter key support
+        function searchProducts() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            if (query === '') {
+                currentProducts = [...products];
+            } else {
+                currentProducts = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            }
+            renderProducts(currentProducts);
+            sortProducts(); // Apply current sort after search
+        }
+        // Initialize search event listeners and auto-complete
+        function initSearch() {
+            const searchInput = document.getElementById('search-input');
+            const suggestions = document.getElementById('suggestions');
+            // Populate datalist with product names and categories
+            const uniqueSuggestions = new Set();
+            products.forEach(p => {
+                uniqueSuggestions.add(p.name);
+                uniqueSuggestions.add(p.category);
+            });
+            suggestions.innerHTML = Array.from(uniqueSuggestions).map(s => `<option value="${s}">`).join('');
+            searchInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    searchProducts();
+                }
+            });
+            searchInput.addEventListener('input', function() {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(searchProducts, 300);
+            });
+            document.getElementById('search-button').addEventListener('click', searchProducts);
+        }
+        // Cart Logic
+        function toggleCart() {
+            const sidebar = document.getElementById('cart-sidebar');
+            sidebar.classList.toggle('translate-x-full');
+        }
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            saveData();
+            updateCartUI();
+            showNotification('Added to cart!', 'success');
+            if (cart.length === 1) toggleCart();
+            if (currentProductName) showProductDetails(encodeURIComponent(currentProductName));
+        }
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveData();
+            updateCartUI();
+            if (currentProductName) showProductDetails(encodeURIComponent(currentProductName));
+        }
+        function updateQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    saveData();
+                    updateCartUI();
+                }
+            }
+            if (currentProductName) showProductDetails(encodeURIComponent(currentProductName));
+        }
+        function updateCartUI() {
+            const cartList = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+            const emptyCartMsg = document.getElementById('empty-cart');
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            cartCount.textContent = totalCount;
+            cartTotal.textContent = `৳ ${totalPrice}`;
+            if (cart.length === 0) {
+                cartList.innerHTML = '';
+                cartList.appendChild(emptyCartMsg);
+            } else {
+                cartList.innerHTML = cart.map(item => `
+                    <div class="flex gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover" alt="">
+                        <div class="flex-grow">
+                            <h4 class="text-xs font-bold text-slate-800 mb-1">${item.name}</h4>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:border-blue-600 hover:text-blue-600 transition-colors">
+                                        <i class="fas fa-minus text-[10px]"></i>
+                                    </button>
+                                    <span class="text-sm font-bold text-slate-700">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-slate-500 hover:border-blue-600 hover:text-blue-600 transition-colors">
+                                        <i class="fas fa-plus text-[10px]"></i>
+                                    </button>
+                                </div>
+                                <span class="text-sm font-black text-blue-600">৳ ${item.price * item.quantity}</span>
+                            </div>
+                        </div>
+                        <button onclick="removeFromCart(${item.id})" class="text-slate-300 hover:text-red-500 transition-colors">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+        }
+        // Wishlist Logic
+        function toggleWishlist() {
+            const sidebar = document.getElementById('wishlist-sidebar');
+            sidebar.classList.toggle('translate-x-full');
+        }
+        function toggleWishlistItem(productId) {
+            const product = products.find(p => p.id === productId);
+            const index = wishlist.findIndex(item => item.id === productId);
+            if (index !== -1) {
+                wishlist.splice(index, 1);
+                showNotification('Removed from wishlist!', 'info');
+            } else {
+                wishlist.push({ ...product });
+                showNotification('Added to wishlist!', 'success');
+            }
+            saveData();
+            updateWishlistUI();
+            renderProducts(); // Re-render to update heart icons
+            if (currentProductName) showProductDetails(encodeURIComponent(currentProductName));
+        }
+        function removeFromWishlist(productId) {
+            wishlist = wishlist.filter(item => item.id !== productId);
+            saveData();
+            updateWishlistUI();
+            renderProducts();
+            if (currentProductName) showProductDetails(encodeURIComponent(currentProductName));
+        }
+        function updateWishlistUI() {
+            const wishlistList = document.getElementById('wishlist-items');
+            const wishlistCount = document.getElementById('wishlist-count');
+            const emptyWishlistMsg = document.getElementById('empty-wishlist');
+            const totalCount = wishlist.length;
+            wishlistCount.textContent = totalCount;
+            if (wishlist.length === 0) {
+                wishlistList.innerHTML = '';
+                wishlistList.appendChild(emptyWishlistMsg);
+            } else {
+                wishlistList.innerHTML = wishlist.map(item => `
+                    <div class="flex gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <img src="${item.image}" class="w-16 h-16 rounded-lg object-cover" alt="">
+                        <div class="flex-grow">
+                            <h4 class="text-xs font-bold text-slate-800 mb-1">${item.name}</h4>
+                            <span class="text-sm font-black text-blue-600">৳ ${item.price}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="addToCartFromWishlist(${item.id})" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                            <button onclick="removeFromWishlist(${item.id})" class="text-slate-300 hover:text-red-500 transition-colors">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        function addToCartFromWishlist(productId) {
+            addToCart(productId);
+            removeFromWishlist(productId);
+        }
+        function moveAllToCart() {
+            wishlist.forEach(item => addToCart(item.id));
+            wishlist = [];
+            saveData();
+            updateWishlistUI();
+            renderProducts();
+            showNotification('All items moved to cart!', 'success');
+        }
+        // WhatsApp Ordering
+        function orderViaWhatsApp() {
+            if (cart.length === 0) return;
+            let message = 'I want to order:\n';
+            cart.forEach(item => {
+                message += `${item.quantity} x ${item.name} - ৳ ${item.price * item.quantity}\n`;
+            });
+            message += `Total: ৳ ${cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)}`;
+            const url = `https://wa.me/+917732930923?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+        // Share Product
+        function shareProduct(productName) {
+            const url = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(productName)}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: productName,
+                    url: url
+                }).catch(console.error);
+            } else {
+                // Fallback: Copy to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Link copied to clipboard!', 'success');
+                }).catch(console.error);
+            }
+        }
+        // Product Details Page
+        function showProductDetails(encodedProductName) {
+            const productName = decodeURIComponent(encodedProductName);
+            currentProductName = productName;
+            const product = products.find(p => p.name === productName);
+            if (!product) return;
+            const inner = document.getElementById('detail-content');
+            inner.innerHTML = `
+                <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-lg shadow-lg">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4">${product.name}</h2>
+                    <span class="text-[12px] font-bold text-slate-400 uppercase mb-2 block">${product.category}</span>
+                    <p class="text-slate-600 mb-6">${product.description}</p>
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="text-xs text-slate-400 line-through">৳ ${product.oldPrice}</span>
+                        <span class="text-2xl font-black text-blue-600">৳ ${product.price}</span>
+                    </div>
+                    <div class="flex gap-4 mb-4">
+                        <button onclick="addToCart(${product.id});" class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105"><i class="fas fa-shopping-cart mr-2"></i>Add to Cart</button>
+                        <button onclick="toggleWishlistItem(${product.id})" class="bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition-all transform hover:scale-105">
+                            <i class="${wishlist.some(i => i.id === product.id) ? 'fas' : 'far'} fa-heart mr-2"></i> ${wishlist.some(i => i.id === product.id) ? 'Remove from' : 'Add to'} Wishlist
+                        </button>
+                        <button onclick="shareProduct('${product.name}')" class="bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600 transition-all transform hover:scale-105"><i class="fas fa-share-alt mr-2"></i>Share</button>
+                    </div>
+                    <button onclick="orderProductViaWhatsApp('${product.name}')" class="w-full bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition-all transform hover:scale-105"><i class="fab fa-whatsapp mr-2"></i>Order via WhatsApp</button>
+                </div>
+            `;
+            document.getElementById('hero-section').classList.add('hidden');
+            document.getElementById('sort-bar').classList.add('hidden');
+            document.getElementById('product-grid').classList.add('hidden');
+            document.getElementById('product-detail').classList.remove('hidden');
+            history.pushState({ page: 'detail' }, '', `?product=${encodeURIComponent(product.name)}`);
+        }
+        function showHome() {
+            currentProductName = null;
+            document.getElementById('hero-section').classList.remove('hidden');
+            document.getElementById('sort-bar').classList.remove('hidden');
+            document.getElementById('product-grid').classList.remove('hidden');
+            document.getElementById('product-detail').classList.add('hidden');
+            history.pushState({ page: 'home' }, '', window.location.pathname);
+        }
+        function orderProductViaWhatsApp(productName) {
+            const product = products.find(p => p.name === productName);
+            const message = `I want to order: 1 x ${product.name} - ৳ ${product.price}`;
+            const url = `https://wa.me/+917732930923?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+        // Notification Function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-[1000] p-4 rounded-lg shadow-lg text-white ${type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`;
+            notification.innerHTML = `<span>${message}</span><button onclick="this.parentElement.remove()" class="ml-2 text-white">&times;</button>`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        // Mobile Categories Toggle
+        function toggleMobileCategories() {
+            document.getElementById('mobile-categories').classList.toggle('open');
+            document.getElementById('categories-overlay').classList.toggle('active');
+        }
+        // Handle browser back/forward
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.page === 'home') {
+                showHome();
+            } else {
+                const params = new URLSearchParams(window.location.search);
+                const product = params.get('product');
+                if (product) {
+                    showProductDetails(product);
+                } else {
+                    showHome();
+                }
+            }
+        });
+        // Check URL params on load
+        window.onload = function() {
+            loadData();
+            initSearch();
+            const params = new URLSearchParams(window.location.search);
+            const product = params.get('product');
+            if (product) {
+                showProductDetails(product);
+            } else {
+                renderProducts();
+            }
+        };
+    </script>
+    <script>
+      
+        // Load from localStorage
+        function loadData() {
+            const storedCart = localStorage.getItem('cart');
+            if (storedCart) cart = JSON.parse(storedCart);
+            const storedWishlist = localStorage.getItem('wishlist');
+            if (storedWishlist) wishlist = JSON.parse(storedWishlist);
+            updateCartUI();
+            updateWishlistUI();
+        }
+        function saveData() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        }
+
+        // Render Products
+        function renderProducts(productsToRender = currentProducts) {
+            const grid = document.getElementById('product-grid');
+            if (productsToRender.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-12 text-slate-500"><i class="fas fa-search text-4xl mb-4"></i><p>No products found.</p></div>';
+                return;
+            }
+            grid.innerHTML = productsToRender.map((product, index) => `
+                <div class="product-card bg-white rounded-2xl overflow-hidden flex flex-col group h-full animate-fadeIn no-click" style="animation-delay: ${index * 0.1}s;" onclick="showProductDetails('${encodeURIComponent(product.name)}')">
+                    <div class="relative overflow-hidden aspect-square">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        ${product.hot ? '<span class="absolute top-2 left-2 badge-hot text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm">HOT DEAL</span>' : ''}
+                        <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <button onclick="buyViaWhatsApp(${product.id}); event.stopPropagation();" class="bg-green-500 text-white p-3 rounded-full shadow-lg hover:bg-green-600 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                            <button onclick="addToCart(${product.id}); event.stopPropagation();" class="bg-white text-blue-600 p-3 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                            <button onclick="toggleWishlistItem(${product.id}); event.stopPropagation();" class="bg-white text-slate-600 p-3 rounded-full shadow-lg hover:bg-slate-100 transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-75">
+                                <i class="${wishlist.some(i => i.id === product.id) ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
+                            <button onclick="shareProduct('${product.name}'); event.stopPropagation();" class="bg-white text-slate-600 p-3 rounded-full shadow-lg hover:bg-gray-700 hover:text-white transition-all transform translate-y-4 group-hover:translate-y-0 duration-300 delay-150">
+                                <i class="fas fa-share-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase mb-1">${product.category}</span>
+                        <h3 class="text-sm font-semibold text-slate-800 mb-2 line-clamp-2">${product.name}</h3>
+                        <div class="mt-auto flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400 line-through">৳ ${product.oldPrice}</span>
+                                <span class="text-lg font-black text-blue-600">৳ ${product.price}</span>
+                            </div>
+                            <button onclick="buyViaWhatsApp(${product.id}); event.stopPropagation();" class="text-green-500 hover:text-green-600 text-2xl transition-colors no-click">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // New: Direct Buy via WhatsApp
+        function buyViaWhatsApp(productId) {
+            const product = products.find(p => p.id === productId);
+            const productLink = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(product.name)}`;
+            const message = `I want to buy:\n\n${product.name}\nPrice: ৳ ${product.price}\n\nProduct Link: ${productLink}`;
+            const url = `https://wa.me/+917732930923?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // Other functions remain the same (filter, sort, search, cart, wishlist, share, etc.)
+
+        // ... (rest of the script from previous version, including renderProducts update above)
+
+        window.onload = function() {
+            loadData();
+            initSearch();
+            const params = new URLSearchParams(window.location.search);
+            const product = params.get('product');
+            if (product) {
+                showProductDetails(product);
+            } else {
+                renderProducts();
+            }
+        };
+    </script>
+</body>
+</html>
